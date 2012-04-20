@@ -1,0 +1,25 @@
+-------------------------
+pixotic 0.1
+-------------------------
+
+General:
+  - Filesystem-based album organization
+  - No integrated upload - expectation is that files will be copied over a share
+  - EXIF support for sorting / rotating
+  - Recursively scan for album directories, hiding empty parents
+  - File-based config, no database or web admin
+  - Basic interactive administration
+    - admin user/password stored in config
+    - ability to mark an album as hidden, which writes a ".private" file to the album dir
+
+Album view
+  - Display albums as a paged grid, with customizable row/column length
+  - Customizable thumbnail size (cached)
+  - Slideshow - lightbox
+
+Photo detail page
+  - Resized image to fit on page (cached on-demand)
+  - EXIF data - name, comments, camera settings
+  - Full-size download link (nofollow link, and ban from robots.txt)
+    - Configurable, can be blocked
+  - Share link - Facebook, etc
