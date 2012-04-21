@@ -1,0 +1,97 @@
+html, body {
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+
+body {
+	font-family: Verdana, Arial, sans-serif; font-size: 13px;
+	background-color: #111;
+	color: #999;
+	width: 1000px;
+}
+
+a, a:visited {
+	color: #CCC;
+}
+
+h1 {
+	font-size: 18px;
+}
+
+#pageBody {
+	margin: 10px;
+	width: 1000px;
+}
+
+#pageHeader {
+}
+
+#pageSidebar {
+	width: 175px;
+	float: left;
+}
+
+#pageContent {
+	width: 805px;
+	padding: 0 10px;
+	float: right;
+}
+
+#pageFooter {
+	clear: both;
+}
+
+ul.albumList {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	width: 175px;
+	background-color: #333;
+}
+
+ul.albumList li {
+	border-bottom: 1px solid #777;
+}
+
+ul.albumList li a {
+	text-decoration: none;
+	display: block;
+	padding: 5px;
+	height: 1em;
+	overflow: hidden;
+	color: #EEE;
+}
+
+ul.albumList li.selected {
+	background-color: #999;
+}
+
+ul.albumList li.selected a {
+	color: #EEE;
+}
+
+ul.albumList ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	background-color: #CCC;
+	border-bottom: 1px solid #777;
+}
+
+ul.albumList ul li {
+	border-bottom: 0;
+}
+
+ul.albumList ul li a {
+	padding-left: 10px;
+	color: #333;
+}
+
+ul.albumList li.selected {
+	background-color: #999;
+}
+
+ul.albumList ul li.selected a {
+	color: #EEE;
+}

@@ -97,12 +97,12 @@ class Pixotic {
 		return $this->rootAlbum;
 	}
 
-	public function getBaseURL() {
-		return $this->getConfig('baseUrl', '');
+	public function getBaseURL($path = null) {
+		return $this->getConfig('baseUrl', '').$path;
 	}
 
 	public function getThemeURL($path = null) {
-		return $this->getBaseURL().'/themes/'.$this->theme.'/'.$path;
+		return $this->getBaseURL('themes/'.$this->theme.'/'.$path);
 	}
 
 	public function getDefaultAlbum($album = null) {

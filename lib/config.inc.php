@@ -1,5 +1,10 @@
 <?php
 
+// Site details
+$siteName = 'Jeremy and Dalida Jongsma';
+$baseUrl = '';
+$theme = 'default';
+
 // Album root
 $albumDirectory = '/home/jeremy/Pictures';
 
@@ -19,12 +24,6 @@ $imageSort = EXIF_DATE;
 $albumWidth = 1000;
 $albumRows = 10;
 $albumCols = 6;
-
-// URL
-$baseUrl = '';
-
-// Theme
-$theme = 'default';
 
 // Administration - hiding/showing albums
 $adminUser = 'admin';

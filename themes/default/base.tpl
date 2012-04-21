@@ -2,21 +2,29 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title><?= $title; ?> - Pixotic</title>
-		<link rel="stylesheet" type="text/css" href="<?= $pixotic->getThemeURL('media/css/style.css'); ?>"/>
-		<script language="javascript" src="<?= $pixotic->getThemeURL('media/js/common.js'); ?>"></script>
+		<link rel="stylesheet" type="text/css" href="<?= $pixotic->getThemeURL('css/style.css'); ?>"/>
+		<script language="javascript" src="<?= $pixotic->getThemeURL('js/common.js'); ?>"></script>
 	</head>
 	<body>
-		<div class="albumList">
-			<ul class="albums">
-			<?
-			$albums = $pixotic->getAlbumNavigation($album);
-			foreach ($albums as $a) {
-				$pixotic->showBlock('albumNav.tpl', array('album' => $a));
-			} ?>
-			</ul>
-		</div>
-		<div class="pageContent">
-			<?= $content; ?>
+		<div id="pageBody">
+			<div id="pageHeader">
+				<h1><?= $pixotic->getConfig('siteName', 'Pixotic'); ?></h1>
+			</div>
+			<div id="pageSidebar">
+				<ul class="albumList">
+				<?
+				$albums = $pixotic->getAlbumNavigation($album);
+				foreach ($albums as $a) {
+					$pixotic->showBlock('albumNav.tpl', array('album' => $a));
+				} ?>
+				</ul>
+			</div>
+			<div id="pageContent">
+				<?= $content; ?>
+			</div>
+			<div id="pageFooter">
+				Powered by Pixotic
+			</div>
 		</div>
 	</body>
 </html>
