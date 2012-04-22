@@ -1,7 +1,7 @@
 <?php
 
 // Site details
-$siteName = 'Jeremy and Dalida Jongsma';
+$siteName = 'My Photo Gallery';
 $baseUrl = '';
 $theme = 'default';
 
