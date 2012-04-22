@@ -11,7 +11,8 @@ if (file_exists($source)) {
 		// Folder icon from: http://findicons.com/icon/92220/black_folder
 		$image = $pixotic->getRealPath('themes/'
 			.$pixotic->getConfig('theme', 'default').'/images/folder_icon.png');
-		$resized = new Pixotic_ResizedImage($image, $size,
+		$album = $pixotic->getAlbum($id);
+		$resized = new Pixotic_AlbumIcon($image, $album, $size,
 			$pixotic->getConfig('cacheDirectory'));
 		$resized->send();
 

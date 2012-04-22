@@ -7,6 +7,7 @@
 <? } ?>
 <form method="post">
 	<input type="hidden" name="view" value="login" />
+	<input type="hidden" name="forward" value="<?= $forward; ?>" />
 	<table border="0">
 		<tr>
 			<td>Username</td>
@@ -19,4 +20,3 @@
 	</table>
 	<input type="submit" value="Login" />
 </form>
-

@@ -1,5 +1,7 @@
 <?php
 
+	// A bunch of functions that should be in GD but aren't.
+
 	if (!defined('imagecreatefrombmp')) {
 
 		function imagecreatefrombmp($filename) {
@@ -96,6 +98,90 @@
 				imagecopy($flipped, $image, $width - $i, 0, $i, 0, 1, $height);
 
 			return $flipped;
+
+		}
+
+	}
+
+	if (!defined('imagecreatefromfile')) {
+
+		function imagecreatefromfile($file, $type = null) {
+
+			if ($type == null) {
+				$imageData = getimagesize($file);
+				if ($imageData)
+					$type = $imageData[2];
+			}
+
+			if ($type) {
+
+				switch($type) {
+
+					case IMAGETYPE_GIF:
+						return imagecreatefromgif($file);
+					case IMAGETYPE_JPEG:
+						return imagecreatefromjpeg($file);
+					case IMAGETYPE_PNG:
+						return imagecreatefrompng($file);
+					case IMAGETYPE_BMP:
+						return imagecreatefrombmp($file);
+					case IMAGETYPE_WBMP:
+						return imagecreatefromwbmp($file);
+					case IMAGETYPE_XBM:
+						return imagecreatefromxbm($file);
+					case IMAGETYPE_SWF:
+					case IMAGETYPE_PSD:
+					case IMAGETYPE_TIFF_II:
+					case IMAGETYPE_TIFF_MM:
+					case IMAGETYPE_JPC:
+					case IMAGETYPE_JP2:
+					case IMAGETYPE_JPX:
+					case IMAGETYPE_JB2:
+					case IMAGETYPE_SWC:
+					case IMAGETYPE_IFF:
+					default:
+						return false;
+				}
+
+			}
+
+			return false;
+
+		}
+
+	}
+
+	if (!defined('imagewrite')) {
+
+		function imagewrite($image, $type, $file = null) {
+
+			switch($type) {
+
+				case IMAGETYPE_GIF:
+					return imagegif($image, $file);
+				case IMAGETYPE_JPEG:
+					return imagejpeg($image, $file);
+				case IMAGETYPE_PNG:
+					return imagepng($image, $file);
+				case IMAGETYPE_WBMP:
+					return imagewbmp($image, $file);
+				case IMAGETYPE_XBM:
+				case IMAGETYPE_BMP:
+				case IMAGETYPE_SWF:
+				case IMAGETYPE_PSD:
+				case IMAGETYPE_TIFF_II:
+				case IMAGETYPE_TIFF_MM:
+				case IMAGETYPE_JPC:
+				case IMAGETYPE_JP2:
+				case IMAGETYPE_JPX:
+				case IMAGETYPE_JB2:
+				case IMAGETYPE_SWC:
+				case IMAGETYPE_IFF:
+				default:
+					return false;
+			}
+
+			return false;
 
 		}
 

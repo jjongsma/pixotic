@@ -29,18 +29,29 @@ h2 {
 	margin: 0 0 5px 0;
 }
 
+h3 {
+	font-size: 14px;
+	margin: 15px 0 10px 0;
+}
+
 #pageBody {
-	margin: 10px;
+	margin: 0 10px;
 	width: 1000px;
 }
 
 #pageHeader {
 	border-bottom: 1px solid #333;
+	height: 70px;
+	padding: 5px;
+}
+
+#pageHeader .logo {
+	float: left;
 }
 
 #pageHeader h1 {
+	padding: 10px 0 0 80px;
 }
-
 
 #pageSidebar {
 	width: 175px;
@@ -89,7 +100,7 @@ ul.albumList li.selected a {
 
 ul.albumList ul {
 	list-style: none;
-	padding: 0 0 0 10px;
+	padding: 0;
 	margin: 0;
 	background-color: #CCC;
 }
@@ -125,15 +136,18 @@ table.thumbnails td a {
 	text-decoration: none;
 }
 
+img.album {
+	border: 3px solid transparent;
+	margin-bottom: 5px;
+}
+
 img.thumbnail {
-	border: 1px solid #333;
-	padding: 5px;
+	border: 3px solid #FFF;
 	margin-bottom: 5px;
 }
 
 img.resized {
-	border: 1px solid #333;
-	padding: 5px;
+	border: 6px solid #FFF;
 	margin: 10px 20px;
 }
 
@@ -154,6 +168,7 @@ table.imageData td.fieldName {
 
 table.imageData td.fieldValue {
 	padding: 2px 5px;
+	width: 200px;
 	background-color: #333;
 	color: #CCC;
 
@@ -197,4 +212,21 @@ a.login {
 
 .manage ul li {
 	padding: 2px;
+}
+
+div.fullsize {
+	float: right;
+}
+
+.description {
+	margin-bottom: 10px;
+}
+
+.smallNormal {
+	font-size: 10px;
+	font-weight: normal;
+}
+
+.indent {
+	margin: 10px 20px;
 }

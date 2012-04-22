@@ -72,6 +72,11 @@
 			return false;
 		}
 
+		public function isAdmin() {
+			// No separate permissions for now
+			return $this->isLoggedIn();
+		}
+
 		// Page / template display
 
 		public function showPage($template, $context = null) {
@@ -399,14 +404,16 @@
 
 	class Pixotic_Image {
 
-		private $path = null;
-		private $album = null;
-		private $pixotic = null;
+		private $path;
+		private $album;
+		private $pixotic;
 
 		private $name;
-		private $thumbnail = null;
-		private $resized = null;
-		private $fullsize = null;
+		private $imageData;
+		private $exifData;
+		private $thumbnail;
+		private $resized;
+		private $fullsize;
 
 		public function __construct($path, $album, $pixotic) {
 
@@ -434,11 +441,34 @@
 			return substr($this->path, strlen($this->pixotic->getConfig('albumDirectory')) + 1);
 		}
 
+		private function getImageData() {
+			if (!$this->imageData) {
+				$this->imageData = getimagesize($this->path);
+			}
+			return $this->imageData;
+		}
+
+		public function getWidth() {
+			$d = $this->getImageData();
+			return $d[0];
+		}
+
+		public function getHeight() {
+			$d = $this->getImageData();
+			return $d[1];
+		}
+
+		public function getDescription() {
+			$exif = $this->getExifData();
+			return $exif['Description'];
+		}
+
 		public function getThumbnail() {
 			if (!$this->thumbnail) {
 				$this->thumbnail = new Pixotic_ResizedImage(
 					$this->path, $this->album, $this->pixotic,
-					$pixotic->getConfig('thumbnailSize', 128));
+					$pixotic->getConfig('thumbnailSize', 128),
+					$this->pixotic->getConfig('cacheDirectory'));
 			}
 			return $this->thumbnail;
 		}
@@ -446,14 +476,16 @@
 		public function getResized() {
 			if (!$this->resized) {
 				$this->resized = new Pixotic_ResizedImage($this->path,
-					$pixotic->getConfig('imageSize', 640));
+					$pixotic->getConfig('imageSize', 640),
+					$this->pixotic->getConfig('cacheDirectory'));
 			}
 			return $this->thumbnail;
 		}
 
 		public function getFullSize() {
 			if (!$this->fullsize)
-				$this->fullsize = new Pixotic_ResizedImage($this->path);
+				$this->fullsize = new Pixotic_ResizedImage($this->path, 0,
+					$this->pixotic->getConfig('cacheDirectory'));
 			return $this->fullsize;
 		}
 
@@ -471,71 +503,80 @@
 
 		public function getExifData() {
 
-			$exif = exif_read_data($this->path);
+			if (!$this->exifData) {
 
-			if ($exif) {
+				$exif = exif_read_data($this->path);
 
-				$aperture = 'f/'.$this->computeExifValue($exif['FNumber']);
-				$focal = $this->computeExifValue($exif['FocalLength']).'mm';
-				$shutter = $exif['ExposureTime'];
-				if ($shutter) {
-					$tmp = explode('/', $shutter);
-					if (count($tmp) == 2) {
-						$div = $tmp[0];
-						$shutter = '1/'.($tmp[1]/$div).' sec';
+				if ($exif) {
+
+					$aperture = 'f/'.$this->computeExifValue($exif['FNumber']);
+					$focal = $this->computeExifValue($exif['FocalLength']).'mm';
+					$shutter = $exif['ExposureTime'];
+					if ($shutter) {
+						$tmp = explode('/', $shutter);
+						if (count($tmp) == 2) {
+							$div = $tmp[0];
+							$shutter = '1/'.($tmp[1]/$div).' sec';
+						}
 					}
+
+					$metermodes = array(
+						'Unknown',
+						'Average',
+						'Center Weighted',
+						'Spot',
+						'Multi-Spot',
+						'Matrix',
+						'Partial');
+					$metermode = $exif['MeteringMode'];
+					if (isset($metermodes[$metermode]))
+						$metermode = $metermodes[$metermode];
+
+					$expbias = $exif['ExposureBiasValue'];
+
+					$expmodes = array(
+						'Unknown',
+						'Manual',
+						'Normal',
+						'Aperture Priority',
+						'Shutter Priority',
+						'Creative',
+						'Action',
+						'Portrait',
+						'Landscape');
+					$expmode = $exif['ExposureProgram'];
+					if (isset($expmodes[$expmode]))
+						$expmode = $expmodes[$expmode];
+
+					$data = array(
+						'Camera Make' => $exif['Make'],
+						'Camera Model' => $exif['Model'],
+						'Aperture' => $aperture,
+						'Shutter Speed' => $shutter,
+						'ISO' => $exif['ISOSpeedRatings'],
+						'Focal Length' => $focal,
+						'Flash' => $exif['Flash'] ? 'Flash' : 'No Flash',
+						'Color Space' => $exif['ColorSpace'] == 1 ? 'sRGB' : 'Unknown',
+						'Exposure Bias' => $expbias,
+						'Exposure Program' => $expmode,
+						'Metering Mode' => $metermode,
+						'Date Taken' => $exif['DateTimeOriginal'],
+						'Description' => $exif['ImageDescription']
+							? trim($exif['ImageDescription'])
+							: trim($exif['COMPUTED']['UserComment'])
+					);
+
+					$this->exifData = $data;
+
+				} else {
+
+					$this->exifData = null;
+				
 				}
-
-				$metermodes = array(
-					'Unknown',
-					'Average',
-					'Center Weighted',
-					'Spot',
-					'Multi-Spot',
-					'Matrix',
-					'Partial');
-				$metermode = $exif['MeteringMode'];
-				if (isset($metermodes[$metermode]))
-					$metermode = $metermodes[$metermode];
-
-				$expbias = $exif['ExposureBiasValue'];
-
-				$expmodes = array(
-					'Unknown',
-					'Manual',
-					'Normal',
-					'Aperture Priority',
-					'Shutter Priority',
-					'Creative',
-					'Action',
-					'Portrait',
-					'Landscape');
-				$expmode = $exif['ExposureProgram'];
-				if (isset($expmodes[$expmode]))
-					$expmode = $expmodes[$expmode];
-
-				$data = array(
-					'Make' => $exif['Make'],
-					'Model' => $exif['Model'],
-					'Aperture' => $aperture,
-					'Shutter Speed' => $shutter,
-					'ISO' => $exif['ISOSpeedRatings'],
-					'Focal Length' => $focal,
-					'Flash' => $exif['Flash'] ? 'Flash' : 'No Flash',
-					'Exposure Bias' => $expbias,
-					'Exposure Program' => $expmode,
-					'Metering Mode' => $metermode,
-					'Color Space' => $exif['ColorSpace'] == 1 ? 'sRGB' : 'Unknown',
-					'Date Taken' => $exif['DateTimeOriginal'],
-					'Width' => $exif['ExifImageWidth'].' pixels',
-					'Height' => $exif['ExifImageLength'].' pixels',
-				);
-
-				return $data;
 
 			}
 
-			return null;
+			return $this->exifData;
 
 		}
 
@@ -543,9 +584,9 @@
 
 	class Pixotic_ResizedImage {
 
-		private $path = null;
-		private $size = null;
-		private $cache = null;
+		protected $path = null;
+		protected $size = null;
+		protected $cache = null;
 
 		public function __construct($path, $size, $cache) {
 			$this->path = $path;
@@ -553,49 +594,67 @@
 			$this->cache = $cache;
 		}
 
-		private function getResizedImage() {
-
+		protected function getCacheFilename() {
 			$ext = array_pop(explode('.', $this->path));
-			$cacheFile = $this->cache.'/'.md5($this->path.'_'.$this->size).'.'.$ext;
+			return $this->cache.'/'.md5($this->path.'_'.$this->size).'.'.$ext;
+		}
 
-			if (file_exists($cacheFile) && filemtime($cacheFile) > filemtime($this->path))
-				return $cacheFile;
+		
+		protected function getSizeRatio($target, $width = 0, $height = 0) {
+
+			$ratio = 1.0;
 
 			// Get image size
-			$ratio = 1.0;
-			list($width, $height, $type) = getimagesize($this->path);
+			if (!$width)
+				list($width, $height) = getimagesize($this->path);
 
 			// Calculate resize ratio
 			if ($width > $height) {
-				$ratio = $this->size / $width;
+				$ratio = $target / $width;
 			} else {
-				$ratio = $this->size / $height;
+				$ratio = $target / $height;
 			}
 
 			$newwidth = $width * $ratio;
 			$newheight = $height * $ratio;
 
-			$extension = $this->imageTypeToExtension($type);
-			$suffix = $extension == 'jpg' ? 'jpeg' : $extension;
-			$createfunc = 'imagecreatefrom'.$suffix;
-			$outputfunc = 'image'.$suffix;
+			return $ratio;
+
+		}
+
+		public function getResizedImage() {
+
+			if (!$this->size)
+				return $this->path;
+
+			$cacheFile = $this->getCacheFilename();
+
+			if (file_exists($cacheFile) && filemtime($cacheFile) > filemtime($this->path))
+				return $cacheFile;
+
+			// Get new image size
+			list($width, $height, $type) = getimagesize($this->path);
+			$ratio = $this->getSizeRatio($this->size, $width, $height);
+			$newwidth = floor($width * $ratio);
+			$newheight = floor($height * $ratio);
 
 			// Load
-			$source = $createfunc($this->path);
+			$source = imagecreatefromfile($this->path, $type);
 			$resized = imagecreatetruecolor($newwidth, $newheight);
-			imagealphablending($resized, true);
+			imagealphablending($resized, false);
+			imagesavealpha($resized, true);
 
 			// Resize
 			imagecopyresampled($resized, $source, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
 
-			// Check EXIF data
-			if (in_array($extension, array('jpg', 'tiff'))) {
+			// Check EXIF data for orientation
+			if ($type == IMAGETYPE_JPEG) {
 				$exif = exif_read_data($this->path);
 				if ($exif)
 					$resized = $this->fixOrientation($resized, $exif['Orientation']);
 			}
 
-			$outputfunc($resized, $cacheFile);
+			imagewrite($resized, $type, $cacheFile);
 
 			return $cacheFile;
 
@@ -603,7 +662,7 @@
 
 		// Send file with correct cache headers
 
-		public function send() {
+		public function send($download = false) {
 
 			$overrides = array(
 				'.css' => 'text/css',
@@ -655,6 +714,9 @@
 					header('Cache-Control: public');
 					header('Content-type: '.$mimetype);
 					header('Last-Modified: '.gmdate('D, d M Y H:i:s', filemtime($file)).' GMT');
+					if ($download) {
+						header('Content-Disposition: attachment; filename='.basename($file));
+					}
 
 					if ($fh = fopen($file, 'r')) {
 						while (!feof($fh))
@@ -673,39 +735,7 @@
 
 		}
 
-		private function imageTypeToExtension($imagetype) {
-			if(empty($imagetype)) return false;
-			switch($imagetype) {
-				case IMAGETYPE_GIF : return 'gif';
-				case IMAGETYPE_JPEG : return 'jpg';
-				case IMAGETYPE_PNG : return 'png';
-				case IMAGETYPE_SWF : return 'swf';
-				case IMAGETYPE_PSD : return 'psd';
-				case IMAGETYPE_BMP : return 'bmp';
-				case IMAGETYPE_TIFF_II : return 'tiff';
-				case IMAGETYPE_TIFF_MM : return 'tiff';
-				case IMAGETYPE_JPC : return 'jpc';
-				case IMAGETYPE_JP2 : return 'jp2';
-				case IMAGETYPE_JPX : return 'jpf';
-				case IMAGETYPE_JB2 : return 'jb2';
-				case IMAGETYPE_SWC : return 'swc';
-				case IMAGETYPE_IFF : return 'aiff';
-				case IMAGETYPE_WBMP : return 'wbmp';
-				case IMAGETYPE_XBM : return 'xbm';
-				default : return false;
-			}
-		}
-
-		private function replaceImageExtension($filename, $ext) {
-			$namestart = strrpos($filename, '/');
-			$extstart = strpos($filename, '.', $namestart);
-			if ($extstart === false)
-				return $filename . '.' . $ext;
-			else
-				return substr($filename, 0, $extstart) . '.' . $ext;
-		}
-
-		private function fixOrientation(&$image, $orientation) {
+		protected function fixOrientation(&$image, $orientation) {
 
 			switch ($orientation) {
 
@@ -736,6 +766,81 @@
 			}
 
 			return $image;
+
+		}
+
+	}
+
+	class Pixotic_AlbumIcon extends Pixotic_ResizedImage {
+
+		private $album;
+
+		public function __construct($icon, $album, $size, $cache) {
+			parent::__construct($icon, $size, $cache);
+			$this->album = $album;
+		}
+
+		protected function getCacheFilename() {
+			$ext = array_pop(explode('.', $this->path));
+			return $this->cache.'/'.md5($this->album->getPath().'_'.$this->size).'.'.$ext;
+		}
+
+		public function getResizedImage() {
+
+			$cacheFile = $this->getCacheFilename();
+
+			if (file_exists($cacheFile) && filemtime($cacheFile) > filemtime($this->album->getPath()))
+				return $cacheFile;
+
+			// Icon needs recreating
+			$resized = imagecreatefromfile(parent::getResizedImage());
+
+			// Blend album images
+			$images = $this->album->getImages();
+			if (count($images) > 0) {
+				$x = floor($this->size * 0.45);
+				$y = floor($this->size * 0.53);
+				$size = floor($this->size * 0.43);
+				$this->overlayImage($resized, $images[0]->getPath(), $x, $y, $size, 0x999999);
+			}
+			if (count($images) > 1) {
+				$x = floor($this->size * 0.45);
+				$y = floor($this->size * 0.03);
+				$size = floor($this->size * 0.43);
+				$this->overlayImage($resized, $images[1]->getPath(), $x, $y, $size, 0x999999);
+			}
+
+			imagealphablending($resized, false);
+			imagesavealpha($resized, true);
+
+			list($width, $height, $type) = getimagesize($cacheFile);
+			imagewrite($resized, $type, $cacheFile);
+
+			return $cacheFile;
+
+		}
+
+		private function overlayImage(&$icon, $image, $x, $y, $size, $border = false) {
+
+			list($width, $height, $type) = getimagesize($image);
+			$overlay = imagecreatefromfile($image, $type);
+			if ($overlay) {
+				$srcx = 0;
+				$srcy = 0;
+				$srcsize = 0;
+				if ($width > $height) {
+					$srcsize = $height;
+					$srcx = floor(($width - $height) / 2);
+				} else {
+					$srcsize = $width;
+					$srcy = floor(($height - $width) / 2);
+				}
+				imagecopyresampled($icon, $overlay, $x, $y, $srcx, $srcy, $size, $size, $srcsize, $srcsize);
+				if ($border) {
+					imagerectangle($icon, $x - 1, $y - 1, $x + $size, $y + $size, 0xFFFFFF);
+					imagerectangle($icon, $x - 2, $y - 2, $x + $size + 1, $y + $size + 1, 0xFFFFFF);
+				}
+			}
 
 		}
 

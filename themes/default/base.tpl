@@ -8,6 +8,10 @@
 	<body>
 		<div id="pageBody">
 			<div id="pageHeader">
+				<div class="logo">
+					<a href="<?= $pixotic->getRealURL('/'); ?>"><img
+						src="<?= $pixotic->getRealURL('/images/pixotic-icon.png'); ?>"/></a>
+				</div>
 				<h1><a href="<?= $pixotic->getRealURL('/'); ?>"><?= $pixotic->getConfig('siteName', 'Pixotic'); ?></a></h1>
 			</div>
 			<div id="pageSidebar">
@@ -15,7 +19,7 @@
 				<?
 				$albums = $this->getAlbumNavigation($active);
 				foreach ($albums as $a) {
-					$this->showBlock('albumNav.tpl', array('album' => $a));
+					$this->showBlock('albumNav.tpl', array('album' => $a, 'level' => 1));
 				} ?>
 				</ul>
 				<? if ($pixotic->isLoggedIn()) { ?>
@@ -34,7 +38,7 @@
 				<?= $content; ?>
 			</div>
 			<div id="pageFooter">
-				Powered by Pixotic
+				Powered by <a target="_blank" href="http://jongsma.org/software/pixotic">Pixotic</a>
 			</div>
 		</div>
 	</body>

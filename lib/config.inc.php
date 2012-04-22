@@ -17,7 +17,7 @@ $albumDirectory = '/home/jeremy/Pictures';
 // EXIF_DATE
 // EXIF_DATE_DESCENDING
 $albumSort = FILENAME_DESCENDING;
-$subAlbumSort = EXIF_DATE_DESCENDING;
+$subAlbumSort = FILENAME;
 $imageSort = EXIF_DATE;
 
 // Album grid size

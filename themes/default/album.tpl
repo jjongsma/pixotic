@@ -9,7 +9,22 @@ Page:
 } ?>
 </div>
 
-<h2><?= $title; ?></h2>
+<h2><?
+function getParent($album, $current = true) {
+	global $pixotic;
+	if ($album->getParent()) {
+		echo getParent($album->getParent(), false);
+		if ($current)
+			return $album->getName();
+		else {
+			$link = $pixotic->getRealURL('index.php?view=album&amp;id='.rawurlencode($album->getRelPath()));
+			return '<a href="'.$link.'">'.$album->getName().'</a> / ';
+		}
+	}
+}
+echo getParent($album);
+?>
+</h2>
 
 <table class="thumbnails">
 	<tr>
@@ -20,7 +35,7 @@ Page:
 		?>
 		<td width="<?= floor(100 / $cols); ?>%">
 			<a href="<?= $pixotic->getRealURL('index.php?view='.$view.'&amp;id='.rawurlencode($item->getRelPath())); ?>">
-				<img class="thumbnail" src="<?= $pixotic->getRealURL('index.php?view=resized&amp;size='.
+				<img class="<?= $item instanceof Pixotic_Album ? 'album' : 'thumbnail'; ?>" src="<?= $pixotic->getRealURL('index.php?view=resized&amp;size='.
 					$pixotic->getConfig('thumbnailSize', 128).'&amp;id='.rawurlencode($item->getRelPath())); ?>" />
 				<br />
 				<?= $item->getName(); ?>
@@ -31,7 +46,7 @@ Page:
 			<tr>
 		<? }
 	}
-	if ($i % $cols < ($cols - 1)) {
+	if ($i % $cols < 0) {
 		foreach (range($i % $cols, $cols -1) as $x) {
 			echo '<td width="'.floor(100/$cols).'%"></td>';
 		}

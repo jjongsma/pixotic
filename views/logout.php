@@ -1,3 +1,3 @@
 <?php
 	$pixotic->logout();
-	header('Location: '.$pixotic->getRealURL('/'));
+	header('Location: '.$_SERVER['HTTP_REFERER']);
