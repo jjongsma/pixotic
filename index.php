@@ -1,18 +1,22 @@
 <?php
 	require_once('lib/common.inc.php');
 
-	$view = $_REQUEST['view'];
-	$id = $_REQUEST['id'];
+	$views = array(
+		'album' => 'views/album.php',
+		'image' => 'views/image.php',
+		'resized' => 'views/resized.php',
+		'fullsize' => 'views/fullsize.php',
+		'login' => 'views/login.php',
+		'logout' => 'views/logout.php',
+		'manage' => 'views/manage.php',
+	);
 
-	switch ($view) {
-		case 'image':
-		case 'album':
-		default:
-			if (!$id) {
-				$default = $pixotic->getDefaultAlbum();
-				if ($default)
-					$id = $default->getRelPath();
-			}
-			$pixotic->showPage('albumOverview.tpl',
-				array('title' => 'All Albums', 'album' => $id));
+	$view = $_REQUEST['view'];
+	if (!$view)
+		$view = 'album';
+
+	if (isset($views[$view])) {
+		include($views[$view]);
+	} else {
+		include('views/error.php');
 	}

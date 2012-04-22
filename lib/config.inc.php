@@ -17,23 +17,22 @@ $albumDirectory = '/home/jeremy/Pictures';
 // EXIF_DATE
 // EXIF_DATE_DESCENDING
 $albumSort = FILENAME_DESCENDING;
-$subAlbumSort = FILENAME;
+$subAlbumSort = EXIF_DATE_DESCENDING;
 $imageSort = EXIF_DATE;
 
 // Album grid size
-$albumWidth = 1000;
 $albumRows = 10;
-$albumCols = 6;
+$albumCols = 5;
 
 // Administration - hiding/showing albums
-$adminUser = 'admin';
+$adminUsername = 'admin';
 $adminPassword = 'password';
 
 // Image cacheing / resizing
 $cacheDirectory = dirname(dirname(__FILE__)).'/cache';
 $thumbnailSize = 128;
 $cacheThumbnails = true;
-$imageSize = 800;
+$imageSize = 640;
 $cacheImages = true;
 
 // Allow users to download fullsize originals

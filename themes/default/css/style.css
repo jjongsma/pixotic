@@ -16,7 +16,17 @@ a, a:visited {
 }
 
 h1 {
-	font-size: 18px;
+	font-size: 20px;
+	margin: 15px 5px;
+}
+
+h1 a {
+	text-decoration: none;
+}
+
+h2 {
+	font-size: 16px;
+	margin: 0 0 5px 0;
 }
 
 #pageBody {
@@ -25,7 +35,12 @@ h1 {
 }
 
 #pageHeader {
+	border-bottom: 1px solid #333;
 }
+
+#pageHeader h1 {
+}
+
 
 #pageSidebar {
 	width: 175px;
@@ -34,11 +49,12 @@ h1 {
 
 #pageContent {
 	width: 805px;
-	padding: 0 10px;
+	padding: 10px;
 	float: right;
 }
 
 #pageFooter {
+	text-align: center;
 	clear: both;
 }
 
@@ -73,10 +89,9 @@ ul.albumList li.selected a {
 
 ul.albumList ul {
 	list-style: none;
-	padding: 0;
+	padding: 0 0 0 10px;
 	margin: 0;
 	background-color: #CCC;
-	border-bottom: 1px solid #777;
 }
 
 ul.albumList ul li {
@@ -84,7 +99,6 @@ ul.albumList ul li {
 }
 
 ul.albumList ul li a {
-	padding-left: 10px;
 	color: #333;
 }
 
@@ -94,4 +108,93 @@ ul.albumList li.selected {
 
 ul.albumList ul li.selected a {
 	color: #EEE;
+}
+
+table.thumbnails {
+	width: 100%;
+}
+
+table.thumbnails td {
+	padding: 5px;
+	margin: 0;
+	text-align: center;
+	vertical-align: top;
+}
+
+table.thumbnails td a {
+	text-decoration: none;
+}
+
+img.thumbnail {
+	border: 1px solid #333;
+	padding: 5px;
+	margin-bottom: 5px;
+}
+
+img.resized {
+	border: 1px solid #333;
+	padding: 5px;
+	margin: 10px 20px;
+}
+
+.pageList {
+	float: right;
+}
+
+table.imageData {
+}
+
+table.imageData td {
+	font-size: 11px;
+}
+
+table.imageData td.fieldName {
+	padding: 2px 20px;
+}
+
+table.imageData td.fieldValue {
+	padding: 2px 5px;
+	background-color: #333;
+	color: #CCC;
+
+}
+
+.error {
+	border: 1px solid red;
+	background-color: #FFCCCC;
+	color: #333;
+	padding: 5px;
+	margin: 5px;
+}
+
+a.login {
+	float: right;
+	color: #666;
+	font-size: 11px;
+	display: block;
+	margin-top: 5px;
+}
+
+.manage {
+	background-color: #222;
+	margin: 20px 0;
+	padding: 5px;
+}
+
+.manage h4 {
+	font-size: 13px;
+	margin: 0 0 5px 0;
+	background-color: #444;
+	color: #EEE;
+	padding: 3px;
+}
+
+.manage ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.manage ul li {
+	padding: 2px;
 }

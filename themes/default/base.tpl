@@ -2,22 +2,33 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title><?= $title; ?> - Pixotic</title>
-		<link rel="stylesheet" type="text/css" href="<?= $pixotic->getThemeURL('css/style.css'); ?>"/>
-		<script language="javascript" src="<?= $pixotic->getThemeURL('js/common.js'); ?>"></script>
+		<link rel="stylesheet" type="text/css" href="<?= $this->getThemeURL('css/style.css'); ?>"/>
+		<script language="javascript" src="<?= $this->getThemeURL('js/common.js'); ?>"></script>
 	</head>
 	<body>
 		<div id="pageBody">
 			<div id="pageHeader">
-				<h1><?= $pixotic->getConfig('siteName', 'Pixotic'); ?></h1>
+				<h1><a href="<?= $pixotic->getRealURL('/'); ?>"><?= $pixotic->getConfig('siteName', 'Pixotic'); ?></a></h1>
 			</div>
 			<div id="pageSidebar">
 				<ul class="albumList">
 				<?
-				$albums = $pixotic->getAlbumNavigation($album);
+				$albums = $this->getAlbumNavigation($active);
 				foreach ($albums as $a) {
-					$pixotic->showBlock('albumNav.tpl', array('album' => $a));
+					$this->showBlock('albumNav.tpl', array('album' => $a));
 				} ?>
 				</ul>
+				<? if ($pixotic->isLoggedIn()) { ?>
+					<div class="manage">
+						<h4>Gallery Management</h4>
+						<ul>
+							<li><a href="/index.php?view=manage">Gallery Management</a></li>
+							<li><a href="/index.php?view=logout">Logout</a></li>
+						</ul>
+					</div>
+				<? } else { ?>
+					<a class="login" href="/index.php?view=login">Admin Login</a>
+				<? } ?>
 			</div>
 			<div id="pageContent">
 				<?= $content; ?>
