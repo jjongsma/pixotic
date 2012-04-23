@@ -4,7 +4,7 @@ Page:
 	if ($p == $page) { ?>
 		<?= $p; ?>
 	<? } else { ?>
-		<a href="<?= $pixotic->getRealURL('index.php?view=album&amp;id='.rawurlencode($album->getRelPath()).'&amp;page='.$p); ?>"><?= $p; ?></a>
+		<a href="<?= $pixotic->getRealURL('/index.php?view=album&amp;id='.rawurlencode($album->getRelPath()).'&amp;page='.$p); ?>"><?= $p; ?></a>
 	<? }
 } ?>
 </div>
@@ -17,7 +17,7 @@ function getParent($album, $current = true) {
 		if ($current)
 			return $album->getName();
 		else {
-			$link = $pixotic->getRealURL('index.php?view=album&amp;id='.rawurlencode($album->getRelPath()));
+			$link = $pixotic->getRealURL('/index.php?view=album&amp;id='.rawurlencode($album->getRelPath()));
 			return '<a href="'.$link.'">'.$album->getName().'</a> / ';
 		}
 	}
@@ -34,8 +34,8 @@ echo getParent($album);
 		$view = $item instanceof Pixotic_Album ? 'album' : 'image';
 		?>
 		<td width="<?= floor(100 / $cols); ?>%">
-			<a href="<?= $pixotic->getRealURL('index.php?view='.$view.'&amp;id='.rawurlencode($item->getRelPath())); ?>">
-				<img class="<?= $item instanceof Pixotic_Album ? 'album' : 'thumbnail'; ?>" src="<?= $pixotic->getRealURL('index.php?view=resized&amp;size='.
+			<a href="<?= $pixotic->getRealURL('/index.php?view='.$view.'&amp;id='.rawurlencode($item->getRelPath())); ?>">
+				<img class="<?= $item instanceof Pixotic_Album ? 'album' : 'thumbnail'; ?>" src="<?= $pixotic->getRealURL('/index.php?view=resized&amp;size='.
 					$pixotic->getConfig('thumbnailSize', 128).'&amp;id='.rawurlencode($item->getRelPath())); ?>" />
 				<br />
 				<?= $item->getName(); ?>
@@ -46,7 +46,7 @@ echo getParent($album);
 			<tr>
 		<? }
 	}
-	if ($i % $cols < 0) {
+	if ($i % $cols > 0) {
 		foreach (range($i % $cols, $cols -1) as $x) {
 			echo '<td width="'.floor(100/$cols).'%"></td>';
 		}
@@ -61,7 +61,7 @@ Page:
 	if ($p == $page) { ?>
 		<?= $p; ?>
 	<? } else { ?>
-		<a href="<?= $pixotic->getRealURL('index.php?view=album&amp;id='.rawurlencode($album->getRelPath()).'&amp;page='.$p); ?>"><?= $p; ?></a>
+		<a href="<?= $pixotic->getRealURL('/index.php?view=album&amp;id='.rawurlencode($album->getRelPath()).'&amp;page='.$p); ?>"><?= $p; ?></a>
 	<? }
 } ?>
 </div>

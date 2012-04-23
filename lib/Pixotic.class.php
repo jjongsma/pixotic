@@ -131,8 +131,8 @@
 
 		private function getThemeRelativeURL($path = null) {
 
-			$themeUrl = 'themes/'.$this->theme.'/'.$path;
-			$deviceUrl = 'themes/'.$this->theme.'/'.$this->deviceType.'/'.$path;
+			$themeUrl = '/themes/'.$this->theme.'/'.$path;
+			$deviceUrl = '/themes/'.$this->theme.'/'.$this->deviceType.'/'.$path;
 
 			return file_exists($this->pixotic->getRealPath($deviceUrl))
 					? $deviceUrl

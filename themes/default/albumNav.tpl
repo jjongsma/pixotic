@@ -1,6 +1,6 @@
 <li<?= $album['selected'] ? ' class="selected"' : ''; ?>><a
 	<? if ($level > 2) echo 'style="padding-left: '.(($level - 2) * 10).'px"'; ?>
-	href="/index.php?view=album&amp;id=<?= rawurlencode($album['path']); ?>"><?= $album['name']; ?></a></li>
+	href="<?= $pixotic->getRealURL('/index.php?view=album&amp;id='.rawurlencode($album['path'])); ?>"><?= $album['name']; ?></a></li>
 <? if (count($album['albums']) > 0) { ?>
 	<ul>
 	<? foreach ($album['albums'] as $a) {

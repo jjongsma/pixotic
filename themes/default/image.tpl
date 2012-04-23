@@ -1,6 +1,6 @@
 <? if ($pixotic->getConfig('downloadFullSize', false) || $pixotic->isAdmin()) { ?>
 <div class="fullsize">
-	<a href="<?= $pixotic->getRealURL('index.php?view=fullsize&amp;id='
+	<a href="<?= $pixotic->getRealURL('/index.php?view=fullsize&amp;id='
 		.rawurlencode($image->getRelPath())); ?>">Download original size
 		(<?= $image->getWidth(); ?>x<?= $image->getHeight(); ?>)</a>
 </div>
@@ -12,7 +12,7 @@ function getParent($album, $current = true) {
 	global $pixotic;
 	if ($album->getParent()) {
 		echo getParent($album->getParent(), false);
-		$link = $pixotic->getRealURL('index.php?view=album&amp;id='.rawurlencode($album->getRelPath()));
+		$link = $pixotic->getRealURL('/index.php?view=album&amp;id='.rawurlencode($album->getRelPath()));
 		return '<a href="'.$link.'">'.$album->getName().'</a> / ';
 	}
 }
@@ -21,7 +21,7 @@ echo $image->getName();
 ?>
 </h2>
 
-<img class="resized" src="<?= $pixotic->getRealURL('index.php?view=resized&amp;size='.
+<img class="resized" src="<?= $pixotic->getRealURL('/index.php?view=resized&amp;size='.
 	$pixotic->getConfig('imageSize', 800).'&amp;id='.rawurlencode($image->getRelPath())); ?>" />
 
 <? if ($image->getDescription() || $pixotic->isAdmin()) { ?>

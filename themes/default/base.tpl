@@ -26,12 +26,12 @@
 					<div class="manage">
 						<h4>Gallery Management</h4>
 						<ul>
-							<li><a href="/index.php?view=manage">Gallery Management</a></li>
-							<li><a href="/index.php?view=logout">Logout</a></li>
+							<li><a href="<?= $pixotic->getRealURL('/index.php?view=manage'); ?>">Gallery Management</a></li>
+							<li><a href="<?= $pixotic->getRealURL('/index.php?view=logout'); ?>">Logout</a></li>
 						</ul>
 					</div>
 				<? } else { ?>
-					<a class="login" href="/index.php?view=login">Admin Login</a>
+					<a class="login" href="<?= $pixotic->getRealURL('/index.php?view=login'); ?>">Admin Login</a>
 				<? } ?>
 			</div>
 			<div id="pageContent">
