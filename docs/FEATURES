@@ -1,28 +1,75 @@
 -------------------------
-pixotic 0.1
+Pixotic 0.1
 -------------------------
 
 General:
   - Filesystem-based album organization
-  - No integrated upload - expectation is that files will be copied over a share
+  - Non-destructive - no functions that irreversibly add, change or delete image files
+    - One exception - writing EXIF description tags
+    - No integrated upload - expectation is that files will be copied over to a
+      shared drive (or FTP, etc)
   - EXIF support for sorting / rotating
   - Multiple levels of sub-albums
-  - File-based config, no database or web admin
+  - File-based config, no database
+  - Disk cache for thumbnail / expensive sorts
   - Basic interactive administration
-    - admin user/password stored in config
-    - ability to mark an album as hidden, which writes a ".private" file to the album dir
+    - Administrator user/password stored in config
+	- Allow manually re-ordering top level albums if enabled in config
+	- Full cache clean / thumbnail regeneration
+  - Create virtual albums with symbolic links
+  - Flag an image or album for later download in a ZIP file
+    - Future integration with photo printing services is possible
+  - Add-on system for:
+    - Album views
+    - Media detail views
+    - Slideshow themes
+    - Thumbnail styles
+  - Protoplasm-based JS controls
+  - AJAX-based navigation using pushState()
+    - Reference
+      - http://stackoverflow.com/questions/824349/modify-the-url-without-reloading-the-page
+      - https://github.com/fortes/history.js/
 
 Album view
-  - Display albums as a paged grid, with customizable row/column length
-  - Customizable thumbnail size (cached)
-  - Slideshow - lightbox
+  - Default view: thumbnail grid - small, medium or large
+    - Load thumbnails post-load to fill available page size
+      - Limit number of simultaneous thumbnail generation requests so that quick navigation
+        away from the page cancels pending requests
+    - Thumbnails link through to detail page
+    - Image name overlay
+    - Arrow keys change pages
+    - Framing styles
+	  - Polaroid / border
+	  - Drop shadow: http://robertnyman.com/2010/03/16/drop-shadow-with-css-for-all-web-browsers/
+	  - Reflection: http://cow.neondragon.net/stuff/reflection/
+  - Other views (plugins):
+    - Ideas: http://www.flash-gallery-maker.com/jquery-photo-gallery.html
+  - Slideshow styles
+    - Lightbox
+    - Coverflow
+    - Gallery view (wall / frame)
+    - Themeable
+  - Admin functions
+    - Mark album private / public
 
 Photo detail page
   - Resized image to fit on page (cached on-demand)
+  - Stripshow - scrollable bottom bar to navigate to siblings
   - EXIF data - name, comments, camera settings
-  - Full-size download link
-    - Configurable, can be blocked
-  - Share link - Facebook, etc
+  - Full-size download link - configurable, can be blocked
+  - Share link - Facebook, email, etc
+  - Arrow keys to navigate between images
+  - Admin functions
+    - Write EXIF description tag to a photo
+	- Rotate image (resets EXIF orientation tags)
+
+Video detail page
+  - HTML5 video player
+    - Flash fallback?
+  - Stripshow - scrollable bottom bar to navigate to siblings
+  - Full-size download link - configurable, can be blocked
+  - Share link - Facebook, email, etc
+  - Arrow keys to navigate between images
 
 TODO:
 

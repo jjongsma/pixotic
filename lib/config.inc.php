@@ -37,3 +37,5 @@ $cacheImages = true;
 
 // Allow users to download fullsize originals
 $downloadFullSize = true;
+
+$config['mediastore.filesystem.directory'] = '/home/jeremy/Pictures';
