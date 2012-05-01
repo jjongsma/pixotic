@@ -37,6 +37,11 @@ class pixotic_MediaStore_Filesystem_MediaItem implements pixotic_MediaItem {
 		return $this->album;
 	}
 
+	public function getMimeType() {
+		$id = $this->getImageData();
+		return $id['mime'];
+	}
+
 	private function getImageData() {
 		if (!$this->imageData) {
 			$this->imageData = getimagesize($this->path);
@@ -49,7 +54,7 @@ class pixotic_MediaStore_Filesystem_MediaItem implements pixotic_MediaItem {
 		if (!$this->metadata) {
 
 			$id = $this->getImageData();
-			$toolkits = $pixotic->getMediaToolkit($id['mime']);
+			$toolkits = $this->pixotic->getMediaToolkit($id['mime']);
 			$toolkit = null;
 
 			foreach ($toolkits as $tk) {
@@ -84,6 +89,10 @@ class pixotic_MediaStore_Filesystem_MediaItem implements pixotic_MediaItem {
 		if ($metadata)
 			return $metadata[pixotic_MediaToolkit::$METADATA_DESCRIPTION];
 		return null;
+	}
+
+	public function getLastModified() {
+		return filemtime($this->path);
 	}
 
 }

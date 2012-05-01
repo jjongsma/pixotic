@@ -40,7 +40,7 @@ class pixotic_MediaStore_Filesystem implements pixotic_Module, pixotic_MediaStor
 	private function findAlbum($id, $albums) {
 
 		foreach ($albums as $album) {
-			$path = $album->getRelPath();
+			$path = $album->getID();
 			if ($path == $id) {
 				return $album;
 			} elseif ($path == substr($id, 0, strlen($path))) {
@@ -59,10 +59,10 @@ class pixotic_MediaStore_Filesystem implements pixotic_Module, pixotic_MediaStor
 	private function findItem($id, $albums) {
 
 		foreach ($albums as $album) {
-			$path = $album->getRelPath();
+			$path = $album->getID();
 			if ($path == substr($id, 0, strlen($path))) {
 				foreach ($album->getItems() as $image) {
-					if ($image->getRelPath() == $id)
+					if ($image->getID() == $id)
 						return $image;
 				}
 				return $this->findItem($id, $album->getAlbums());

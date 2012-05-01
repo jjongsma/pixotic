@@ -1,5 +1,5 @@
 <?php
-$image = $pixotic->getImage($_REQUEST['id']);
+$image = $pixotic->getItem($_REQUEST['id']);
 if ($image)
 	$image->getFullSize()->send(true);
 else

@@ -3,7 +3,7 @@
 class pixotic_TemplateEngine {
 
 	private $pixotic;
-	private $theme = 'theme.default';
+	private $theme = 'Theme.Default';
 	private $deviceType = 'desktop';
 
 	private $defaultContext;
@@ -58,10 +58,15 @@ class pixotic_TemplateEngine {
 
 		$realTemplate = $this->pixotic->getRealPath($this->getThemeRelativeURL($template));
 
-		if (!file_exists($realTemplate))
-			return $this->fetchTemplate('notfound.tpl', array(
-				'title' => 'Template Not Found',
-				'error' => 'The template <b>'.$template.'</b> was not found.'));
+		if (!file_exists($realTemplate)) {
+			if ($template == 'notfound.tpl') {
+				echo '<p>Template not found: ' . $template . '</p>';
+				return;
+			} else
+				return $this->fetchTemplate('notfound.tpl', array(
+					'title' => 'Template Not Found',
+					'error' => 'The template <b>'.$template.'</b> was not found.'));
+		}
 
 		ob_start();
 		include($realTemplate);
@@ -90,10 +95,10 @@ class pixotic_TemplateEngine {
 
 			$albumEntry = array(
 				'name' => $a->getName(),
-				'path' => $a->getRelPath());
+				'id' => $a->getID());
 
-			if (substr($active, 0, strlen($a->getRelPath())) == $a->getRelPath()) {
-				if ($a->getRelPath() == $active)
+			if (substr($active, 0, strlen($a->getID())) == $a->getID()) {
+				if ($a->getID() == $active)
 					$albumEntry['selected'] = true;
 				if (count($a->getAlbums()) > 0)
 					$albumEntry['albums'] = $this->getAlbumNavigation($active, $a);

@@ -15,16 +15,27 @@ class pixotic_Cache_Filesystem implements pixotic_Module, pixotic_Cache {
 	public function deactivate() {
 	}
 
-	public function get($key, $expiration = null) {
+	public function get($key, $newerThan = null) {
 		$cacheFile = $this->getCacheFile($key);
 		if (!file_exists($cacheFile)
-				|| ($expiration && filemtime($cacheFile) < ($expiration + time())))
+				|| ($newerThan && filemtime($cacheFile) < $newerThan))
 			return null;
 		return file_get_contents($cacheFile);
 	}
 
+	public function exists($key, $newerThan = null) {
+		$cacheFile = $this->getCacheFile($key);
+		if (!file_exists($cacheFile)
+				|| ($newerThan && filemtime($cacheFile) < $newerThan))
+			return false;
+		return true;
+	}
+
 	public function put($key, $data) {
-		file_put_contents($this->getCacheFile($key), $data, LOCK_EX);
+		$cacheFile = $this->getCacheFile($key);
+		file_put_contents($cacheFile.'.tmp', $data, LOCK_EX);
+		// Atomic commit
+		rename($cacheFile.'.tmp', $cacheFile);
 	}
 
 	private function getCacheFile($key) {

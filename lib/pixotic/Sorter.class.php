@@ -1,163 +1,121 @@
 <?php
 
 // Sorting constants
-define('CUSTOM', 'CUSTOM');
-define('FILENAME', 'FILENAME');
-define('FILENAME_DESCENDING', 'FILENAME_DESCENDING');
-define('FILE_DATE', 'FILE_DATE');
-define('FILE_DATE_DESCENDING', 'FILE_DATE_DESCENDING');
-define('EXIF_DATE', 'EXIF_DATE');
-define('EXIF_DATE_DESCENDING', 'EXIF_DATE_DESCENDING');
+define('SORT_CUSTOM', 'SORT_CUSTOM');
+define('SORT_NAME', 'SORT_NAME');
+define('SORT_NAME_DESCENDING', 'SORT_NAME_DESCENDING');
+define('SORT_DATE', 'SORT_DATE');
+define('SORT_DATE_DESCENDING', 'SORT_DATE_DESCENDING');
+define('SORT_EXIF_DATE', 'SORT_EXIF_DATE');
+define('SORT_EXIF_DATE_DESCENDING', 'SORT_EXIF_DATE_DESCENDING');
 
 class pixotic_Sorter {
 
 	private static $handlers = array(
-		CUSTOM => 'SortByCustom',
-		FILENAME => 'SortByFilename',
-		FILENAME_DESCENDING => 'SortByFilenameDesc',
-		FILE_DATE => 'SortByFileDate',
-		FILE_DATE_DESCENDING => 'SortByFileDateDesc',
-		EXIF_DATE => 'SortByExifDate',
-		EXIF_DATE_DESCENDING => 'SortByExifDateDesc'
+		SORT_CUSTOM => 'sortByCustom',
+		SORT_NAME => 'sortByName',
+		SORT_NAME_DESCENDING => 'sortByNameDesc',
+		SORT_DATE => 'sortByLastModified',
+		SORT_DATE_DESCENDING => 'sortByLastModifiedDesc',
+		SORT_EXIF_DATE => 'sortByExifDate',
+		SORT_EXIF_DATE_DESCENDING => 'sortByExifDateDesc'
 	);
 
 	private static $cacheable = array(
-		CUSTOM => 'custom',
-		EXIF_DATE => 'exif',
-		EXIF_DATE_DESCENDING => 'exifdesc'
+		SORT_CUSTOM => 'custom',
+		SORT_EXIF_DATE => 'exif',
+		SORT_EXIF_DATE_DESCENDING => 'exifdesc'
 	);
 
-	private static $exifCache = array();
+	private $cache;
+	private $exifCache;
+
+	public function __construct($cache) {
+		$this->cache = $cache;
+		$this->exifCache = array();
+	}
 
 	// Usage contract: all items to be sorted must be of the same type and
 	// in the same directory
-	public static function Sort(&$ary, $type = FILENAME, $cacheDir = null) {
+	public function sort(&$items, $type = SORT_NAME) {
 
-		if (!count($ary))
-			return $ary;
+		if (!count($items))
+			return $items;
 
-		$refitem = reset($ary);
-		$dir = dirname($refitem->getPath());
+		if ($this->cache && isset(pixotic_Sorter::$cacheable[$type])) {
 
-		// EXIF not supported for directories
-		if ($refitem instanceof pixotic_Album) {
-			if ($type == EXIF_DATE)
-				$type = FILE_DATE;
-			elseif ($type == EXIF_DATE_DESCENDING)
-				$type = FILE_DATE_DESCENDING;
-		}
+			// Determine a unique ID for this sorted set
+			$refitem = reset($items);
+			$parent = $refitem->getAlbum();
+			$parentId = $album ?  $album->getID() : 'ROOTALBUM';
+			$itemType = $refitem instanceof pixotic_MediaItem ? 'item' : 'album';
+			$cacheKey = 'sort-'.$parentId.'-'.$itemType.'-'.$type;
+			
+			$lastmod = $parent ? $parent->getLastModified() : 0;
 
-		$sortCache = null;
-		$refreshCache = false;
-		pixotic_Sorter::$exifCache = array();
-
-		if (isset(pixotic_Sorter::$cacheable[$type])) {
-
-			$cacheKey = md5($dir.'-'.$type);
-			$sortCache = $cacheDir.'/'.pixotic_Sorter::$cacheable[$type].'sort-'.$cacheKey;
-
-			if (file_exists($sortCache)) {
-
-				$cacheTime = filemtime($sortCache);
-
-				if (filemtime($dir) > $cacheTime) {
-					$refreshCache = true;
-				} else {
-					$dh = opendir($dir);
-					while ($f = readdir($dh)) {
-						if (filemtime($dir.'/'.$f) > $cacheTime) {
-							$refreshCache = true;
-							break;
-						}
-					}
-					closedir($dh);
-				}
-
-			} else {
-				$refreshCache = true;
+			// Found cache, scan directory for last modified time to see if we need
+			// to regenerate
+			if ($this->cache->exists($cacheKey)) {
+				foreach ($items as $i)
+					if ($i->getLastModified() > $lastmod)
+						$lastmod = $i->getLastModified();
 			}
 
-			if ($refreshCache) {
+			$cachedSort = $this->cache->get($cacheKey, $lastmod);
 
-				usort($ary, array('pixotic_Sorter', pixotic_Sorter::$handlers[$type]));
-				pixotic_Sorter::CacheSortOrder($sortCache, $ary);
+			if (!$cachedSort) {
+
+				usort($items, array($this, pixotic_Sorter::$handlers[$type]));
+				$itemIDs = array();
+				foreach ($items as $i)
+					$itemIDs[] = $i->getID();
+				$this->cache->put($key, implode("\n", $itemIDs));
 
 			} else {
 			
 				// Sort like cache file
 				$sorted = array();
-				$order = array_flip(explode("\n", trim(file_get_contents($sortCache))));
+				$order = array_flip(explode("\n", $cachedSort));
 
-				foreach ($ary as $f) {
-					$sorted[$order[$f->getPath()]] = $f;
-					unset($order[$f->getPath()]);
+				foreach ($items as $f) {
+					if (isset($order[$f->getID()])) {
+						$sorted[$order[$f->getID()]] = $f;
+						unset($order[$f->getID()]);
+					}
 				}
 
 				ksort($sorted);
-
-				// Add any missing items
-				if (count($order) > 0) {
-					$sorted = array_merge($sorted, array_flip($order));
-					pixotic_Sorter::CacheSortOrder($sortCache, $sorted);
-				}
-
 				return $sorted;
 
 			}
 
 		} else {
 
-			usort($ary, array('pixotic_Sorter', pixotic_Sorter::$handlers[$type]));
+			usort($items, array($this, pixotic_Sorter::$handlers[$type]));
 
 		}
 
-		return $ary;
+		return $items;
 
 	}
 
-	private static function CacheSortOrder($cacheFile, &$items) {
-
-		if (is_dir(dirname($cacheFile))) {
-
-			$fh = fopen($cacheFile.'.tmp', 'w');
-
-			if (flock($fh, LOCK_EX)) {
-				foreach ($items as $f)
-					fwrite($fh, $f->getPath()."\n");
-				fflush($fh);
-				flock($fh, LOCK_UN);
-			}
-
-			fclose($fh);
-
-			rename($cacheFile.'.tmp', $cacheFile);
-
-		}
-
+	private function cacheSortOrder($key, &$items) {
+		$itemIDs = array();
+		foreach ($items as $i)
+			$itemIDs[] = $i->getID();
+		$this->cache->put($key, implode("\n", $itemIDs));
 	}
 
-	public static function SortByFilename($a, $b) {
-		$f1 = basename($a->getPath());
-		$f2 = basename($b->getPath());
+	public function sortByName($a, $b) {
+		$f1 = basename($a->getID());
+		$f2 = basename($b->getID());
 		return strcmp($f1, $f2);
 	}
 
-	public static function SortByFileDate($a, $b) {
+	public function sortByLastModified($a, $b) {
 
-		$f1 = $a->getPath();
-		$f2 = $b->getPath();
-
-		if (!file_exists($f1)) {
-			if (file_exists($f2))
-				return -1;
-			return 0;
-		}
-
-
-		if (!file_exists($f2))
-			return 1;
-		$m1 = filemtime($f1);
-		$m2 = filemtime($f2);
+		$m1 = $a->getLastModified();
+		$m2 = $b->getLastModified();
 
 		if ($m1 < $m2)
 			return -1;
@@ -168,10 +126,12 @@ class pixotic_Sorter {
 
 	}
 
-	public static function SortByExifDate($a, $b) {
+	public function sortByExifDate($a, $b) {
 
-		$e1 = pixotic_Sorter::GetExifDate($a->getPath());
-		$e2 = pixotic_Sorter::GetExifDate($b->getPath());
+		// TODO: special case albums, need to search sub-albums
+
+		$e1 = $this->getExifDate($a->getAbsolutePath());
+		$e2 = $this->getExifDate($b->getAbsolutePath());
 
 		if ($e1 < $e2)
 			return -1;
@@ -182,7 +142,7 @@ class pixotic_Sorter {
 
 	}
 
-	private static function GetExifDate($file) {
+	private function getExifDate($file) {
 
 		if (!file_exists($file))
 			return 0;
@@ -190,8 +150,8 @@ class pixotic_Sorter {
 		if (is_dir($file))
 			return filemtime($file);
 
-		if (isset(pixotic_Sorter::$exifCache[$file]))
-			return pixotic_Sorter::$exifCache[$file];
+		if (isset($this->exifCache[$file]))
+			return $this->exifCache[$file];
 
 		$exif = exif_read_data($file);
 
@@ -209,7 +169,7 @@ class pixotic_Sorter {
 		if (!$exifDate)
 			return filemtime($file);
 
-		pixotic_Sorter::$exifCache[$file] = $exifDate;
+		$this->exifCache[$file] = $exifDate;
 
 		return $exifDate;
 
@@ -217,16 +177,16 @@ class pixotic_Sorter {
 
 	// Reverse versions
 
-	public static function SortByFilenameDesc($a, $b) {
-		return pixotic_Sorter::SortByFilename($b, $a);
+	public function sortByNameDesc($a, $b) {
+		return $this->sortByName($b, $a);
 	}
 
-	public static function SortByFileDateDesc($a, $b) {
-		return pixotic_Sorter::SortByFileDate($b, $a);
+	public function sortByLastModifiedDesc($a, $b) {
+		return $this->sortByLastModified($b, $a);
 	}
 
-	public static function SortByExifDateDesc($a, $b) {
-		return pixotic_Sorter::SortByExifDate($b, $a);
+	public function sortByExifDateDesc($a, $b) {
+		return $this->sortByExifDate($b, $a);
 	}
 
 }

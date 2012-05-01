@@ -14,6 +14,8 @@ class pixotic_MediaStore_Filesystem_Album implements pixotic_Album {
 	private $albums;
 	private $sort;
 
+	private $sorter;
+
 	private $validExts = array(
 		'jpg', 'jpeg', 'gif', 'bmp', 'png', 'svg', 'tif', 'tiff'
 	);
@@ -25,6 +27,8 @@ class pixotic_MediaStore_Filesystem_Album implements pixotic_Album {
 		$this->albumSort = $albumSort ? $albumSort : $pixotic->getConfig('subAlbumSort', FILENAME);
 		$this->imageSort = $imageSort ? $imageSort : $pixotic->getConfig('imageSort', FILENAME);
 		$this->pixotic = $pixotic;
+
+		$this->sorter = new pixotic_Sorter($pixotic->getService(pixotic_Service::$CACHE));
 
 		$this->name = basename($path);
 
@@ -58,8 +62,7 @@ class pixotic_MediaStore_Filesystem_Album implements pixotic_Album {
 			closedir($dh);
 		}
 		// Sort by sub-album sorting preference, or $sort
-		$this->albums = pixotic_Sorter::Sort($this->albums, $this->albumSort,
-			$this->pixotic->getConfig('cacheDirectory'));
+		$this->albums = $this->sorter->sort($this->albums, $this->albumSort);
 		return $this->albums;
 	}
 
@@ -81,8 +84,7 @@ class pixotic_MediaStore_Filesystem_Album implements pixotic_Album {
 			closedir($dh);
 		}
 		// Sort by sub-album sorting preference, or $sort
-		$this->items = pixotic_Sorter::Sort($this->items, $this->imageSort,
-			$this->pixotic->getConfig('cacheDirectory'));
+		$this->items = $this->sorter->sort($this->items, $this->imageSort);
 		return $this->items;
 	}
 
@@ -90,7 +92,7 @@ class pixotic_MediaStore_Filesystem_Album implements pixotic_Album {
 		return $this->name;
 	}
 
-	public function getParent() {
+	public function getAlbum() {
 		return $this->parent;
 	}
 
@@ -100,6 +102,10 @@ class pixotic_MediaStore_Filesystem_Album implements pixotic_Album {
 
 	public function getPath() {
 		return $this->path;
+	}
+
+	public function getLastModified() {
+		return filemtime($this->path);
 	}
 
 }

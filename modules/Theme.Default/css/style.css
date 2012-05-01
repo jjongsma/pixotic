@@ -1,0 +1,233 @@
+html, body {
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+
+body {
+	font-family: Verdana, Arial, sans-serif; font-size: 13px;
+	background-color: #111;
+	color: #999;
+	width: 1000px;
+}
+
+a, a:visited {
+	color: #CCC;
+}
+
+h1 {
+	font-size: 20px;
+	margin: 15px 5px;
+}
+
+h1 a {
+	text-decoration: none;
+}
+
+h2 {
+	font-size: 16px;
+	margin: 0 0 5px 0;
+}
+
+h3 {
+	font-size: 14px;
+	margin: 15px 0 10px 0;
+}
+
+#pageBody {
+	margin: 0 10px;
+	width: 1000px;
+}
+
+#pageHeader {
+	border-bottom: 1px solid #333;
+	height: 70px;
+	padding: 5px;
+}
+
+#pageHeader .logo {
+	float: left;
+}
+
+#pageHeader h1 {
+	padding: 10px 0 0 80px;
+}
+
+#pageSidebar {
+	width: 175px;
+	float: left;
+}
+
+#pageContent {
+	width: 805px;
+	padding: 10px;
+	float: right;
+}
+
+#pageFooter {
+	text-align: center;
+	clear: both;
+	margin: 15px;
+}
+
+ul.albumList {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	width: 175px;
+	background-color: #333;
+}
+
+ul.albumList li {
+	border-bottom: 1px solid #777;
+}
+
+ul.albumList li a {
+	text-decoration: none;
+	display: block;
+	padding: 5px;
+	height: 1em;
+	overflow: hidden;
+	color: #EEE;
+}
+
+ul.albumList li.selected {
+	background-color: #999;
+}
+
+ul.albumList li.selected a {
+	color: #EEE;
+}
+
+ul.albumList ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	background-color: #CCC;
+}
+
+ul.albumList ul li {
+	border-bottom: 0;
+}
+
+ul.albumList ul li a {
+	color: #333;
+}
+
+ul.albumList li.selected {
+	background-color: #999;
+}
+
+ul.albumList ul li.selected a {
+	color: #EEE;
+}
+
+table.thumbnails {
+	width: 100%;
+}
+
+table.thumbnails td {
+	padding: 5px;
+	margin: 0;
+	text-align: center;
+	vertical-align: top;
+}
+
+table.thumbnails td a {
+	text-decoration: none;
+}
+
+img.album {
+	border: 3px solid transparent;
+	margin-bottom: 5px;
+}
+
+img.thumbnail {
+	border: 3px solid #FFF;
+	margin-bottom: 5px;
+}
+
+img.resized {
+	border: 6px solid #FFF;
+	margin: 10px 20px;
+}
+
+.pageList {
+	float: right;
+}
+
+table.imageData {
+}
+
+table.imageData td {
+	font-size: 11px;
+}
+
+table.imageData td.fieldName {
+	padding: 2px 20px;
+}
+
+table.imageData td.fieldValue {
+	padding: 2px 5px;
+	width: 200px;
+	background-color: #333;
+	color: #CCC;
+
+}
+
+.error {
+	border: 1px solid red;
+	background-color: #FFCCCC;
+	color: #333;
+	padding: 5px;
+	margin: 5px;
+}
+
+a.login {
+	float: right;
+	color: #666;
+	font-size: 11px;
+	display: block;
+	margin-top: 5px;
+}
+
+.manage {
+	background-color: #222;
+	margin: 20px 0;
+	padding: 5px;
+}
+
+.manage h4 {
+	font-size: 13px;
+	margin: 0 0 5px 0;
+	background-color: #444;
+	color: #EEE;
+	padding: 3px;
+}
+
+.manage ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.manage ul li {
+	padding: 2px;
+}
+
+div.fullsize {
+	float: right;
+}
+
+.description {
+	margin-bottom: 10px;
+}
+
+.smallNormal {
+	font-size: 10px;
+	font-weight: normal;
+}
+
+.indent {
+	margin: 10px 20px;
+}

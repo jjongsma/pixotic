@@ -3,7 +3,7 @@
 // Site details
 $siteName = 'My Photo Gallery';
 $baseUrl = '';
-$theme = 'default';
+$theme = 'Theme.Default';
 
 // Album root
 $albumDirectory = '/home/jeremy/Pictures';
@@ -16,9 +16,9 @@ $albumDirectory = '/home/jeremy/Pictures';
 // FILE_DATE_DESCENDING
 // EXIF_DATE
 // EXIF_DATE_DESCENDING
-$albumSort = FILENAME_DESCENDING;
-$subAlbumSort = FILENAME;
-$imageSort = EXIF_DATE;
+$albumSort = SORT_NAME_DESCENDING;
+$subAlbumSort = SORT_NAME;
+$imageSort = SORT_EXIF_DATE;
 
 // Album grid size
 $albumRows = 10;
@@ -39,3 +39,4 @@ $cacheImages = true;
 $downloadFullSize = true;
 
 $config['mediastore.filesystem.directory'] = '/home/jeremy/Pictures';
+$config['cache.filesystem.directory'] = dirname(dirname(__FILE__)).'/cache';

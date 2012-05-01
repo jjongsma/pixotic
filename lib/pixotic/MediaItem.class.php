@@ -1,29 +1,15 @@
 <?php
+require_once('ItemBase.class.php');
 
 /** 
  * Represents a media item in Pixotic.
  */
-interface pixotic_MediaItem {
-
-	/**
-	 * Get the unique ID for this item, for use in URLs, etc.
-	 */
-	public function getID();
+interface pixotic_MediaItem extends pixotic_ItemBase {
 
 	/**
 	 * Get the absolute path of this item's file.
 	 */
 	public function getAbsolutePath();
-
-	/**
-	 * Get the name of this item.
-	 */
-	public function getName();
-
-	/**
-	 * Get the album this item belongs to.
-	 */
-	public function getAlbum();
 
 	/**
 	 * Get the original width of this media item.
@@ -39,6 +25,11 @@ interface pixotic_MediaItem {
 	 * Get the description of this media item.
 	 */
 	public function getDescription();
+
+	/**
+	 * Get the MIME type of this media item.
+	 */
+	public function getMimeType();
 
 }
 

@@ -1,14 +1,10 @@
 <?php
+require_once('ItemBase.class.php');
 
 /**
  * Represents an album.
  */
-interface pixotic_Album {
-
-	/**
-	 * Gets this album's unique ID for use in URLs, etc.
-	 */
-	public function getID();
+interface pixotic_Album extends pixotic_ItemBase {
 
 	/**
 	 * Gets an array of sub-albums in this album.
@@ -20,16 +16,6 @@ interface pixotic_Album {
 	 * Get an array of media items in this album.
 	 */
 	public function getItems();
-
-	/**
-	 * Get the name of this album.
-	 */
-	public function getName();
-
-	/**
-	 * Get this album's parent album.
-	 */
-	public function getParent();
 
 	/**
 	 * Set this album as private.

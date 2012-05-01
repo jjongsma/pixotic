@@ -2,20 +2,19 @@
 
 	$id = $_REQUEST['id'];
 
-	$image = $id ? $image = $pixotic->getImage($id) : null;
+	$item = $id ? $item = $pixotic->getItem($id) : null;
 
-	if ($image) {
+	if ($item) {
 	
 		$pixotic->showPage('image.tpl',
-			array('title' => $image->getName(),
-				'active' => $image->getAlbum()->getRelPath(),
-				'imageSize' => $pixotic->getConfig('imageSize', 640),
-				'image' => $image));
+			array('title' => $item->getName(),
+				'active' => $item->getAlbum()->getID(),
+				'item' => $item));
 
 	} else {
 
 		$pixotic->showPage('notfound.tpl',
-			array('title' => 'Album Not Found',
-				'error' => 'The album <b>'.basename($id).'</b> was not found.'));
+			array('title' => 'Item Not Found',
+				'error' => 'The item <b>'.$id.'</b> was not found.'));
 
 	}

@@ -5,7 +5,7 @@
 	if (!$id) {
 		$default = $pixotic->getDefaultAlbum();
 		if ($default)
-			$id = $default->getRelPath();
+			$id = $default->getID();
 	}
 
 	$album = $id ? $album = $pixotic->getAlbum($id) : null;
@@ -13,7 +13,7 @@
 	if ($album) {
 
 		$page = $_REQUEST['page'] ? $_REQUEST['page'] : 1;
-		$items = array_merge($album->getAlbums(), $album->getImages());
+		$items = array_merge($album->getAlbums(), $album->getItems());
 		$perpage = $pixotic->getConfig('albumRows', 5) * $pixotic->getConfig('albumCols', 5);
 		$pages = ceil(count($items) / $perpage);
 
