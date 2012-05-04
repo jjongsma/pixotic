@@ -22,7 +22,7 @@ class pixotic_MediaStore_Filesystem_MediaItem implements pixotic_MediaItem {
 	}
 
 	public function getID() {
-		return substr($this->path, strlen($this->pixotic->getConfig('albumDirectory')) + 1);
+		return substr($this->path, strlen(realpath($this->pixotic->getConfig('mediastore.filesystem.directory'))) + 1);
 	}
 
 	public function getName() {

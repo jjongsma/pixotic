@@ -13,12 +13,6 @@ class pixotic_ResizedImage {
 		$this->cache = $cache;
 	}
 
-	protected function getCacheFilename() {
-		$ext = array_pop(explode('.', $this->path));
-		return $this->cache.'/'.md5($this->path.'_'.$this->size).'.'.$ext;
-	}
-
-	
 	protected function getSizeRatio($target, $width = 0, $height = 0) {
 
 		$ratio = 1.0;
@@ -46,10 +40,10 @@ class pixotic_ResizedImage {
 		if (!$this->size)
 			return $this->path;
 
-		$cacheFile = $this->getCacheFilename();
+		$cacheKey = 'resized-'.$this->path.'-'.$this.size;
 
-		if (file_exists($cacheFile) && filemtime($cacheFile) > filemtime($this->path))
-			return $cacheFile;
+		if ($this->cache->exists($cacheKey, filemtime($this->path)))
+			return $this->cache->getStream($cacheKey);
 
 		// Get new image size
 		list($width, $height, $type) = getimagesize($this->path);
@@ -73,9 +67,14 @@ class pixotic_ResizedImage {
 				$resized = $this->fixOrientation($resized, $exif['Orientation']);
 		}
 
-		imagewrite($resized, $type, $cacheFile);
+		$tmpFile = tempnam('pix');
+		imagewrite($resized, $type, $tmpFile);
 
-		return $cacheFile;
+		$fh = fopen($tmpFile, 'r');
+		$this->cache->putStream($cacheKey, $fh);
+		unlink($tmpFile);
+
+		return $this->cache->getStream($cacheKey);
 
 	}
 

@@ -29,7 +29,7 @@ echo getParent($album);
 <table class="thumbnails">
 	<tr>
 	<? for ($i = 0; $i < count($items); $i++) {
-		$cols = $pixotic->getConfig('albumCols', 5);
+		$cols = 5;
 		$item = $items[$i];
 		$view = $item instanceof Pixotic_Album ? 'album' : 'image';
 		?>

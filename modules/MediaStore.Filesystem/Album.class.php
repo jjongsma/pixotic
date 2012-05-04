@@ -24,8 +24,8 @@ class pixotic_MediaStore_Filesystem_Album implements pixotic_Album {
 
 		$this->path = $path;
 		$this->parent = $parent;
-		$this->albumSort = $albumSort ? $albumSort : $pixotic->getConfig('subAlbumSort', FILENAME);
-		$this->imageSort = $imageSort ? $imageSort : $pixotic->getConfig('imageSort', FILENAME);
+		$this->albumSort = $albumSort ? $albumSort : $pixotic->getConfig('gallery.sorting.albums', FILENAME);
+		$this->imageSort = $imageSort ? $imageSort : $pixotic->getConfig('gallery.sorting.items', FILENAME);
 		$this->pixotic = $pixotic;
 
 		$this->sorter = new pixotic_Sorter($pixotic->getService(pixotic_Service::$CACHE));
@@ -97,7 +97,7 @@ class pixotic_MediaStore_Filesystem_Album implements pixotic_Album {
 	}
 
 	public function getID() {
-		return substr($this->path, strlen($this->pixotic->getConfig('albumDirectory')) + 1);
+		return substr($this->path, strlen(realpath($this->pixotic->getConfig('mediastore.filesystem.directory'))) + 1);
 	}
 
 	public function getPath() {

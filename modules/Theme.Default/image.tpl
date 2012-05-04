@@ -1,4 +1,4 @@
-<? if ($pixotic->getConfig('downloadFullSize', false) || $pixotic->isAdmin()) { ?>
+<? if ($pixotic->getConfig('gallery.downloadFullSize', false) || $pixotic->isAdmin()) { ?>
 <div class="fullsize">
 	<a href="<?= $pixotic->getRealURL('/index.php?view=fullsize&amp;id='
 		.rawurlencode($item->getID())); ?>">Download original size
@@ -22,7 +22,7 @@ echo $item->getName();
 </h2>
 
 <img class="resized" src="<?= $pixotic->getRealURL('/index.php?view=resized&amp;size='.
-	$pixotic->getConfig('imageSize', 800).'&amp;id='.rawurlencode($item->getID())); ?>" />
+	$pixotic->getConfig('gallery.imageSize', 800).'&amp;id='.rawurlencode($item->getID())); ?>" />
 
 <? if ($item->getDescription() || $pixotic->isAdmin()) { ?>
 	<div id="imageDescription_<?= base64_encode($item->getID()); ?>" class="inlineDescription indent">

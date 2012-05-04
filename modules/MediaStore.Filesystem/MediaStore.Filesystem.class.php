@@ -20,10 +20,10 @@ class pixotic_MediaStore_Filesystem implements pixotic_Module, pixotic_MediaStor
 	private function getRootAlbum() {
 		if (!$this->rootAlbum) {
 			$this->rootAlbum = new pixotic_MediaStore_Filesystem_Album(
-				$this->pixotic->getConfig('mediastore.filesystem.directory'),
+				realpath($this->pixotic->getConfig('mediastore.filesystem.directory')),
 				null,
-				$this->pixotic->getConfig('albumSort', FILENAME_ASCENDING),
-				$this->pixotic->getConfig('imageSort', FILENAME_ASCENDING),
+				$this->pixotic->getConfig('gallery.sorting.root', FILENAME_ASCENDING),
+				$this->pixotic->getConfig('gallery.sorting.items', FILENAME_ASCENDING),
 				$this->pixotic);
 		}
 		return $this->rootAlbum;

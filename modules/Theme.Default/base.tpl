@@ -12,7 +12,7 @@
 					<a href="<?= $pixotic->getRealURL('/'); ?>"><img
 						src="<?= $pixotic->getRealURL('/images/pixotic-icon.png'); ?>"/></a>
 				</div>
-				<h1><a href="<?= $pixotic->getRealURL('/'); ?>"><?= $pixotic->getConfig('siteName', 'Pixotic'); ?></a></h1>
+				<h1><a href="<?= $pixotic->getRealURL('/'); ?>"><?= $pixotic->getConfig('site.name', 'Pixotic'); ?></a></h1>
 			</div>
 			<div id="pageSidebar">
 				<ul class="albumList">

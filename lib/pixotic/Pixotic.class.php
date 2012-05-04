@@ -20,19 +20,20 @@ class Pixotic {
 	public function __construct() {
 
 		$config = array();
+		include(PIXOTIC.'/lib/pixotic/config.defaults.inc.php');
 		include(PIXOTIC.'/lib/config.inc.php');
 
-		$this->config = array_merge(get_defined_vars(), $config);
+		$this->config = $config;
 		$this->allowLogin = session_start() && $this->config['adminUsername'];
-		$this->baseUrl = $this->getConfig('baseUrl', '');
+		$this->baseUrl = $this->getConfig('site.url', '');
 
 		$this->templateEngine = new pixotic_TemplateEngine(
-			$this->getConfig('theme', 'Theme.Default'), $this);
+			$this->getConfig('site.theme', 'Theme.Default'), $this);
 
 		$this->initializeModules();
 
 		$this->mediaStore = $this->getService(pixotic_Service::$MEDIA_STORE,
-			$this->getConfig('mediaStore', 'MediaStore.Filesystem'));
+			$this->getConfig('mediastore.provider', 'MediaStore.Filesystem'));
 
 	}
 

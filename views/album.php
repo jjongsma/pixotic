@@ -14,7 +14,7 @@
 
 		$page = $_REQUEST['page'] ? $_REQUEST['page'] : 1;
 		$items = array_merge($album->getAlbums(), $album->getItems());
-		$perpage = $pixotic->getConfig('albumRows', 5) * $pixotic->getConfig('albumCols', 5);
+		$perpage = 10 * 5; // rows * cols
 		$pages = ceil(count($items) / $perpage);
 
 		if ($page > $pages)
@@ -30,7 +30,7 @@
 		$pixotic->showPage('album.tpl',
 			array('title' => $album->getName(),
 				'active' => $id,
-				'thumbnailSize' => $pixotic->getConfig('thumbnailSize', 128),
+				'thumbnailSize' => $pixotic->getConfig('gallery.thumbnailSize', 128),
 				'page' => $page,
 				'pages' => $pages,
 				'items' => $items,
