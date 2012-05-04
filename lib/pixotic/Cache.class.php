@@ -23,6 +23,19 @@ interface pixotic_Cache {
 	 */
 	public function put($key, $data);
 
+	/**
+	 * Remove an entry from the cache.
+	 * @param string $key The cache key
+	 */
+	public function invalidate($key);
+
+	/**
+	 * Clear the entire cache. This will result in a lot of on-demand
+	 * data regeneration, resulting in slow requests for awhile - use
+	 * with care.
+	 */
+	public function flush();
+
 }
 
 /**

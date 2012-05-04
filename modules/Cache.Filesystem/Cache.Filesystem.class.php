@@ -38,7 +38,25 @@ class pixotic_Cache_Filesystem implements pixotic_Module, pixotic_Cache {
 		rename($cacheFile.'.tmp', $cacheFile);
 	}
 
+	public function invalidate($key) {
+		$cacheFile = $this->getCacheFile($key);
+		if (file_exists($cacheFile)) {
+			unlink($cacheFile);
+			return true;
+		}
+		return false;
+	}
+
+	public function flush() {
+		if (!$this->cacheDir || $this->cacheDir == '/')
+			throw new Exception('Cache directory not configured correctly.');
+		foreach (glob($this->cacheDir.'/*') as $cacheFile)
+			unlink($cacheFile);
+	}
+
 	private function getCacheFile($key) {
+		if (!$this->cacheDir || $this->cacheDir == '/')
+			throw new Exception('Cache directory not configured correctly.');
 		return $this->cacheDir.'/'.md5($key).'.cache';
 	}
 
