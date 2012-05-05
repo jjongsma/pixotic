@@ -28,7 +28,7 @@ class pixotic_MediaStore_Filesystem_Album implements pixotic_Album {
 		$this->imageSort = $imageSort ? $imageSort : $pixotic->getConfig('gallery.sorting.items', FILENAME);
 		$this->pixotic = $pixotic;
 
-		$this->sorter = new pixotic_Sorter($pixotic->getService(pixotic_Service::$CACHE));
+		$this->sorter = new pixotic_Sorter($pixotic);
 
 		$this->name = basename($path);
 

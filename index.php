@@ -4,8 +4,10 @@
 	$views = array(
 		'album' => 'views/album.php',
 		'image' => 'views/image.php',
+		'thumbnail' => 'views/thumbnail.php',
 		'resized' => 'views/resized.php',
 		'fullsize' => 'views/fullsize.php',
+		'albumThumb' => 'views/albumThumb.php',
 		'login' => 'views/login.php',
 		'logout' => 'views/logout.php',
 		'manage' => 'views/manage.php',

@@ -118,7 +118,7 @@ class pixotic_MediaToolkit_PHPExif extends pixotic_MediaToolkit implements pixot
 		throw new Exception('Unsupported action');
 	}
 
-	public function createAlbumThumbnail($album, $width, $height, $format, $outFile) {
+	public function createAlbumThumbnail($album, $size, $format, $outFile) {
 		throw new Exception('Unsupported action');
 	}
 

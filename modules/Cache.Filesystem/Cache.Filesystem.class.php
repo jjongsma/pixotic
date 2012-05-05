@@ -5,9 +5,11 @@ require_once(PIXOTIC.'/lib/pixotic/Cache.class.php');
 
 class pixotic_Cache_Filesystem implements pixotic_Module, pixotic_Cache {
 
+	private $log;
 	private $cacheDir;
 
 	public function activate(&$pixotic) {
+		$this->log = $pixotic->getLog();
 		$this->cacheDir = $pixotic->getConfig('cache.filesystem.directory');
 		$pixotic->registerService(pixotic_Service::$CACHE, $this);
 	}
@@ -18,17 +20,10 @@ class pixotic_Cache_Filesystem implements pixotic_Module, pixotic_Cache {
 	public function get($key, $newerThan = null) {
 		$cacheFile = $this->getCacheFile($key);
 		if (!file_exists($cacheFile)
-				|| ($newerThan && filemtime($cacheFile) < $newerThan))
+				|| ($newerThan && filemtime($cacheFile) < $newerThan)) {
 			return null;
+		}
 		return file_get_contents($cacheFile);
-	}
-
-	public function getStream($key, $newerThan = null) {
-		$cacheFile = $this->getCacheFile($key);
-		if (!file_exists($cacheFile)
-				|| ($newerThan && filemtime($cacheFile) < $newerThan))
-			return null;
-		return fopen($cacheFile);
 	}
 
 	public function exists($key, $newerThan = null) {
@@ -44,22 +39,6 @@ class pixotic_Cache_Filesystem implements pixotic_Module, pixotic_Cache {
 		file_put_contents($cacheFile.'.tmp', $data, LOCK_EX);
 		// Atomic commit
 		rename($cacheFile.'.tmp', $cacheFile);
-	}
-
-	public function putStream($key, $stream) {
-
-		$cacheFile = $this->getCacheFile($key);
-
-		if ($fh = fopen($cacheFile.'.tmp', 'w')) {
-			while (!feof($fh))
-				fwrite(fread($stream, 8192));
-			fclose($fh);
-		}
-		fclose($stream);
-
-		// Atomic commit
-		rename($cacheFile.'.tmp', $cacheFile);
-
 	}
 
 	public function invalidate($key) {

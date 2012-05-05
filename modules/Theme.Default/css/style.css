@@ -231,3 +231,21 @@ div.fullsize {
 .indent {
 	margin: 10px 20px;
 }
+
+.debug {
+	color: #666;
+}
+
+.debug ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+hr {
+	height: 1px;
+	border: 0;
+	background-color: #999;
+	margin: 5px 0;
+	padding: 0;
+}

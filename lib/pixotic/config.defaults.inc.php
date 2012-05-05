@@ -13,7 +13,8 @@ $config['gallery.sorting.root'] = SORT_NAME_DESCENDING;
 $config['gallery.sorting.albums'] = SORT_NAME;
 $config['gallery.sorting.items'] = SORT_EXIF_DATE;
 
-// Image sizes
+// Image resizing
+$config['gallery.imageCache'] = dirname(dirname(dirname(__FILE__))).'/cache';
 $config['gallery.thumbnailSize'] = 128;
 $config['gallery.imageSize'] = 800;
 $config['gallery.downloadFullSize'] = true;

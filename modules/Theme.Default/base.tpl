@@ -40,6 +40,17 @@
 			<div id="pageFooter">
 				Powered by <a target="_blank" href="http://jongsma.org/software/pixotic">Pixotic</a>
 			</div>
+			<? $pixotic->getLog()->debug('Request finished');
+			if ($pixotic->getConfig('site.debug', false)) { ?>
+			<div class="debug">
+				<p><b>Developer Logs</b></p>
+				<ul>
+				<? foreach ($pixotic->getLog()->getEntries() as $e) { ?>
+					<li>[<?= strtoupper($e[0]); ?>] <?= $e[1]; ?>: <?= $e[2]; ?></li>
+				<? } ?>
+				</ul>
+			</div>
+			<? } ?>
 		</div>
 	</body>
 </html>

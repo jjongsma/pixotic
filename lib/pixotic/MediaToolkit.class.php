@@ -49,10 +49,10 @@ abstract class pixotic_MediaToolkit {
 	 * Scale the media item by a fixed ratio and write the output to the
 	 * specified file.
 	 * @param pixotic_MediaItem The media item
-	 * @param float $ratio The scaling ratio
+	 * @param float $size The maxiumum size dimension to scale to (width or height)
 	 * @param $outFile The output file to write to
 	 */
-	public abstract function scaleItem($mediaItem, $ratio, $outFile);
+	public abstract function scaleItem($mediaItem, $size, $outFile);
 
 	/**
 	 * Resize the media item to the specified width and height, and optionally
@@ -92,6 +92,6 @@ abstract class pixotic_MediaToolkit {
 	 *		pixotic_MediaToolkit::$FORMAT_*)
 	 * @param string $outFile The file to write the thumbnail to.
 	 */
-	public abstract function createAlbumThumbnail($album, $width, $height, $format, $outFile);
+	public abstract function createAlbumThumbnail($album, $size, $format, $outFile);
 
 }

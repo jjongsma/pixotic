@@ -1,6 +1,10 @@
 <?php
-$image = $pixotic->getItem($_REQUEST['id']);
-if ($image)
-	$image->getFullSize()->send(true);
-else
+$id = $_REQUEST['id'];
+$item = $pixotic->getItem($id);
+if ($item) {
+	$file = $item->getAbsolutePath();
+	if ($file)
+		$pixotic->sendFile($file, true);
+} else {
 	header('Status: 404 Not Found');
+}

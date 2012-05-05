@@ -27,11 +27,15 @@ class pixotic_Sorter {
 		SORT_EXIF_DATE_DESCENDING => 'exifdesc'
 	);
 
+	private $pixotic;
 	private $cache;
+	private $log;
 	private $exifCache;
 
-	public function __construct($cache) {
-		$this->cache = $cache;
+	public function __construct($pixotic) {
+		$this->pixotic = $pixotic;
+		$this->cache = $pixotic->getService(pixotic_Service::$CACHE);
+		$this->log = $pixotic->getLog();
 		$this->exifCache = array();
 	}
 
@@ -43,11 +47,11 @@ class pixotic_Sorter {
 			return $items;
 
 		if ($this->cache && isset(pixotic_Sorter::$cacheable[$type])) {
-
+			
 			// Determine a unique ID for this sorted set
 			$refitem = reset($items);
 			$parent = $refitem->getAlbum();
-			$parentId = $album ?  $album->getID() : 'ROOTALBUM';
+			$parentId = $parent ?  $parent->getID() : 'ROOTALBUM';
 			$itemType = $refitem instanceof pixotic_MediaItem ? 'item' : 'album';
 			$cacheKey = 'sort-'.$parentId.'-'.$itemType.'-'.$type;
 			
@@ -64,12 +68,12 @@ class pixotic_Sorter {
 			$cachedSort = $this->cache->get($cacheKey, $lastmod);
 
 			if (!$cachedSort) {
-
+			
 				usort($items, array($this, pixotic_Sorter::$handlers[$type]));
 				$itemIDs = array();
 				foreach ($items as $i)
 					$itemIDs[] = $i->getID();
-				$this->cache->put($key, implode("\n", $itemIDs));
+				$this->cache->put($cacheKey, implode("\n", $itemIDs));
 
 			} else {
 			
@@ -97,13 +101,6 @@ class pixotic_Sorter {
 
 		return $items;
 
-	}
-
-	private function cacheSortOrder($key, &$items) {
-		$itemIDs = array();
-		foreach ($items as $i)
-			$itemIDs[] = $i->getID();
-		$this->cache->put($key, implode("\n", $itemIDs));
 	}
 
 	public function sortByName($a, $b) {

@@ -31,11 +31,16 @@ echo getParent($album);
 	<? for ($i = 0; $i < count($items); $i++) {
 		$cols = 5;
 		$item = $items[$i];
-		$view = $item instanceof Pixotic_Album ? 'album' : 'image';
+		$view = 'image';
+		$thumbnail = 'thumbnail';
+		if ($item instanceof Pixotic_Album) {
+			$view = 'album';
+			$thumbnail = 'albumThumb';
+		}
 		?>
 		<td width="<?= floor(100 / $cols); ?>%">
 			<a href="<?= $pixotic->getRealURL('/index.php?view='.$view.'&amp;id='.rawurlencode($item->getID())); ?>">
-				<img class="<?= $item instanceof Pixotic_Album ? 'album' : 'thumbnail'; ?>" src="<?= $pixotic->getRealURL('/index.php?view=resized&amp;size='.
+				<img class="<?= $item instanceof Pixotic_Album ? 'album' : 'thumbnail'; ?>" src="<?= $pixotic->getRealURL('/index.php?view='.$thumbnail.'&amp;size='.
 					$pixotic->getConfig('thumbnailSize', 128).'&amp;id='.rawurlencode($item->getID())); ?>" />
 				<br />
 				<?= $item->getName(); ?>
