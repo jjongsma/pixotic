@@ -43,7 +43,8 @@ class pixotic_MediaStore_Filesystem implements pixotic_Module, pixotic_MediaStor
 			$path = $album->getID();
 			if ($path == $id) {
 				return $album;
-			} elseif ($path == substr($id, 0, strlen($path))) {
+			} elseif ($path == substr($id, 0, strlen($path))
+					&& $id{strlen($path)} == '/') {
 				return $this->findAlbum($id, $album->getAlbums());
 			}
 		}
@@ -60,7 +61,8 @@ class pixotic_MediaStore_Filesystem implements pixotic_Module, pixotic_MediaStor
 
 		foreach ($albums as $album) {
 			$path = $album->getID();
-			if ($path == substr($id, 0, strlen($path))) {
+			if ($path == substr($id, 0, strlen($path))
+					&& $id{strlen($path)} == '/') {
 				foreach ($album->getItems() as $image) {
 					if ($image->getID() == $id)
 						return $image;
