@@ -30,7 +30,7 @@ class Pixotic {
 		$this->log->debug('Request started');
 		$this->log->trace('start Pixotic::__construct()');
 
-		$this->allowLogin = session_start() && $this->config['adminUsername'];
+		$this->allowLogin = session_start() && $this->config['admin.username'];
 		$this->baseUrl = $this->getConfig('site.url', '');
 
 		$this->templateEngine = new pixotic_TemplateEngine(
@@ -152,8 +152,8 @@ class Pixotic {
 
 	public function login($username, $password) {
 		if ($this->allowLogin
-				&& $this->config['adminUsername'] == $username
-				&& $this->config['adminPassword'] == $password) {
+				&& $this->config['admin.username'] == $username
+				&& $this->config['admin.password'] == $password) {
 			$_SESSION['loggedIn'] = true;
 			return true;
 		}
